@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:mysql://loclhost:3306/oa?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: test
+    password: test
+    type: com.alibaba.druid.pool.DruidDataSource
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  #发送邮件设置
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 65644853@qq.com
+    password: xxxxxxx
+    properties:
+      mail:
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+      debug: true
+#mybatis
+mybatis:
+  config-location: classpath:/mybatis/mybatis-config.xml
+  mapperLocations: classpath:mapper/**/*.xml
+  check-config-location: true
+server:
+  servlet:
+    context-path: /api
+
+## 邮件发送者
+emailFrom: 65644853@qq.com

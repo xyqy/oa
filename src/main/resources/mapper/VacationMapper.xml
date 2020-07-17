@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.oa.modules.vacation.dao.VacationMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.vacation.dto.VacationMoreDto">
+
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="vacation_type_id" jdbcType="INTEGER" property="vacationTypeId"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="days" jdbcType="FLOAT" property="days"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remark" javaType="string" property="remark"/>
+        <result column="reject_reason" javaType="string" property="rejectReason"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+            id,
+            user_id,
+            vacation_type_id,
+            start_time,
+            end_time,
+            `days`,
+            `state`,
+            create_time,
+            update_time,
+            remark,
+            reject_reason
+    </sql>
+
+    <sql id="Base_sql">
+        SELECT u.name  AS userName,
+               u.code,
+               d.name  AS departmentName,
+               vt.name AS vacationTypeName,
+               v.start_time,
+               v.end_time,
+               v.state,
+               v.create_time,
+               v.remark,
+               v.id,
+               v.user_id,
+               vacation_type_id,
+               v.days,
+               v.reject_reason
+        FROM vacation v
+                 LEFT JOIN user u on v.user_id = u.id
+                 LEFT JOIN department d on u.department_id = d.id
+                 LEFT JOIN vacation_type vt on v.vacation_type_id = vt.id
+    </sql>
+
+    <!--查询请假信息列表-->
+    <select id="selectVacationList" parameterType="com.qyy.oa.modules.vacation.dto.VacationMoreDto"
+            resultMap="BaseResultMap">
+        <include refid="Base_sql"/>
+        <where>
+            <if test="userId != null">
+                and u.id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="userId == null">
+                and v.state <![CDATA[ <> ]]> 0
+            </if>
+            <if test="userName != null and userName != ''">
+                and u.name LIKE CONCAT('%',Replace(#{userName,jdbcType=VARCHAR},' ',''),'%')
+            </if>
+            <if test="code != null and code != ''">
+                and u.code = #{code,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime!=null"><![CDATA[
+           and v.start_time >= #{startTime,jdbcType=TIMESTAMP}
+        ]]></if>
+            <if test="endTime != null"><![CDATA[
+           and v.end_time <= #{endTime,jdbcType=TIMESTAMP}
+        ]]></if>
+            and v.is_delete = 0
+        </where>
+        order by v.create_time desc
+    </select>
+
+    <!--将所有的请假信息都完成才能再次填写-->
+    <select id="selectUserCount" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity" resultType="int">
+        SELECT COUNT(*)
+        FROM vacation
+        WHERE user_id = #{userId,jdbcType=INTEGER}
+        AND (state = 0 or state = 1)
+        AND is_delete = 0
+    </select>
+
+    <!--新增请假-->
+    <insert id="insertVacation" keyColumn="id" keyProperty="id"
+            parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity" useGeneratedKeys="true">
+        insert into vacation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="vacationTypeId != null">
+                vacation_type_id,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="days != null">
+                `days`,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="vacationTypeId != null">
+                #{vacationTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                #{days,jdbcType=FLOAT},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--查询单个请假信息-->
+    <select id="selectVacationDetail" parameterType="integer" resultMap="BaseResultMap">
+        <include refid="Base_sql"/>
+        WHERE v.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <!--更新请假信息-->
+    <update id="updateVacation" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity">
+        update vacation
+        <set>
+            <if test="vacationTypeId != null">
+                vacation_type_id = #{vacationTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                `days` = #{days,jdbcType=FLOAT},
+            </if>
+            <if test="state != null">
+                `state` = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectReason != null and rejectReason != ''">
+                reject_reason = #{rejectReason,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--删除操作-->
+    <update id="deleteVacation" parameterType="integer">
+        update vacation set is_delete = 1 WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 查询所有信息-->
+    <select id="selectVacationListForExcel" resultMap="BaseResultMap">
+        <include refid="Base_sql"/>
+    </select>
+
+    <!--统计信息-->
+    <select id="countVacation" parameterType="com.qyy.oa.modules.vacation.dto.VacationCountDto"
+            resultType="com.qyy.oa.modules.vacation.dto.VacationCountDto">
+        SELECT
+        DATE_FORMAT(vacation.create_time, '%Y-%m') AS monthTime,
+        count(DISTINCT user_id) AS userCount,
+        COUNT(days) AS days,
+        d.name AS departmentName,
+        d.id AS departmentId,
+        vt.id AS vacationTypeId,
+        vt.name AS vacationTypeName,
+        u.name AS userName
+        FROM vacation
+        LEFT JOIN user u on vacation.user_id = u.id
+        left join department d on u.department_id = d.id
+        LEFT JOIN vacation_type vt on vacation.vacation_type_id = vt.id
+        <where>
+            <if test="departmentId != null">
+                and department_id=#{departmentId,jdbcType=INTEGER}
+            </if>
+            <if test="monthTime != null and monthTime != ''">
+                and DATE_FORMAT(vacation.create_time, '%Y-%m') = #{monthTime,jdbcType=VARCHAR}
+            </if>
+            <if test="vacationTypeId != null">
+                and vacation_type_id = #{vacationTypeId,jdbcType=INTEGER}
+            </if>
+        </where>
+        GROUP BY u.department_id,
+        vt.id,
+        DATE_FORMAT(vacation.create_time, '%Y-%m')
+        ORDER BY DATE_FORMAT(vacation.create_time, '%Y-%m') DESC
+    </select>
+    <!--当前时间是否已经请过假-->
+    <select id="selectUserVacationCount" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity"
+            resultType="int">
+        SELECT
+        count(*)
+        FROM
+        vacation
+        WHERE
+        <if test="startTime != null">#{startTime,jdbcType=TIMESTAMP}</if>
+        <if test="endTime != null">#{endTime,jdbcType=TIMESTAMP}</if>
+        BETWEEN start_time
+        AND end_time
+        and user_id = #{userId,jdbcType=INTEGER}
+        and state  <![CDATA[ <> ]]> 0
+        and is_delete = 0
+    </select>
+
+    <!--统计请假类型信息-->
+    <select id="countVacationType" resultType="com.qyy.oa.modules.vacation.dto.VacationCountDto">
+        select count(vacation_type_id) AS vacationTypeCount,
+               vt.name                 AS vacationTypeName
+        from vacation
+                 left join vacation_type vt on vacation.vacation_type_id = vt.id
+        where vacation.is_delete = 0
+          and vacation.state <![CDATA[ <> ]]> 0
+        group by vt.id
+    </select>
+
+</mapper>

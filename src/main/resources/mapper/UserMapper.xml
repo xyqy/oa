@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qyy.oa.modules.user.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.user.dto.UserMoreDto">
+        <!--@Table user-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="department_id" jdbcType="INTEGER" property="departmentId"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="entry_time" jdbcType="TIMESTAMP" property="entryTime"/>
+        <result column="first_work_time" jdbcType="TIMESTAMP" property="firstWorkTime"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="expire_days" jdbcType="DOUBLE" property="expireDays"/>
+        <result column="is_delete" jdbcType="INTEGER" property="isDelete"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            `name`,
+            account,
+            `password`,
+            code,
+            department_id,
+            tel,
+            email,
+            sex,
+            `state`,
+            create_time,
+            update_time,
+            entry_time,
+            first_work_time,
+            expire_days,
+            expire_time
+    </sql>
+
+    <sql id="Base_Sql">
+        select user.*, d.name AS departmentName
+        from user
+                 LEFT JOIN department d on user.department_id = d.id
+    </sql>
+
+    <!--查询用户列表-->
+    <select id="selectUserList" resultMap="BaseResultMap">
+        <include refid="Base_Sql"/>
+        <where>
+            <if test="account != null and account != ''">
+                AND user.account LIKE CONCAT('%',Replace(#{account,jdbcType=VARCHAR},' ',''),'%')
+            </if>
+            <if test="name != null and name != ''">
+                AND user.name LIKE CONCAT('%',Replace(#{name,jdbcType=VARCHAR},' ',''),'%')
+            </if>
+            <if test="code != null and code != ''">
+                AND user.account = #{code,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null and email != ''">
+                AND user.email LIKE CONCAT('%',Replace(#{email,jdbcType=VARCHAR},' ',''),'%')
+            </if>
+            and user.is_delete=0
+        </where>
+        order by user.create_time DESC
+    </select>
+    <!--查询单个用户详情-->
+    <select id="getUserDetail" parameterType="integer" resultMap="BaseResultMap">
+        <include refid="Base_Sql"/>
+        WHERE user.id = #{id,jdbcType=INTEGER}
+    </select>
+    <!--新增用户-->
+    <insert id="insertUser" keyColumn="id" keyProperty="id"
+            parameterType="com.qyy.oa.modules.user.entity.UserEntity" useGeneratedKeys="true">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="account != null">
+                account,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="departmentId != null">
+                department_id,
+            </if>
+            <if test="tel != null">
+                tel,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="state != null">
+                `state`,
+            </if>
+            <if test="code != null and code != ''">
+                code,
+            </if>
+            <if test="entryTime != null">
+                entry_time,
+            </if>
+            <if test="expireTime != null">
+                expire_time,
+            </if>
+            <if test="firstWorkTime != null">
+                first_work_time,
+            </if>
+            <if test="expireDays != null">
+                expire_days,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentId != null">
+                #{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="tel != null">
+                #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="code != null and code != ''">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime != null">
+                #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="firstWorkTime != null">
+                #{firstWorkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireDays != null">
+                #{expireDays,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--更新用户-->
+    <update id="updateUser" parameterType="com.qyy.oa.modules.user.entity.UserEntity">
+        update user
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentId != null">
+                department_id = #{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                `state` = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="code != null and code != ''">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                entry_time = #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireDays != null">
+                expire_days = #{expireDays,jdbcType=DOUBLE},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="firstWorkTime != null">
+                first_work_time = #{firstWorkTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <!--删除用户-->
+    <update id="deleteUser" parameterType="integer">
+        update user set is_delete = 1 where id = #{id,jdbcType=INTEGER}
+    </update>
+    <!--查询用户账号数量-->
+    <select id="selectUserAccountCount" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM user WHERE account = #{account,jdbcType=VARCHAR}
+    </select>
+
+    <!--导出用户表格-->
+    <select id="selectUserListForExcel" resultType="com.qyy.oa.modules.user.dto.UserExcelDto">
+        <include refid="Base_Sql"/>
+        where is_delete = 0
+    </select>
+
+    <!--登录-->
+    <select id="getUserInfo" resultType="com.qyy.oa.modules.user.entity.UserEntity">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE account = #{account,jdbcType=VARCHAR}
+        and password = #{password,jdbcType=VARCHAR}
+        and state = 0
+    </select>
+</mapper>
