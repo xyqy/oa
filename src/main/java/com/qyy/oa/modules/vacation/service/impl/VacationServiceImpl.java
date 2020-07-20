@@ -246,8 +246,8 @@ public class VacationServiceImpl implements VacationService {
             //再次判断用户的年假剩余时间
             UserEntity user = userMapper.getUserDetail(vacationMoreDto.getUserId());
 
-            //如果请假信息上的天数小于用户剩余的天数则不能通过
-            if (vacationMoreDto.getDays() < user.getExpireDays()) {
+            //如果请假信息上的天数大于用户剩余的天数则不能通过
+            if (vacationMoreDto.getDays() > user.getExpireDays()) {
                 return ResultData.error("该用户年假时间超过时长");
             }
 
