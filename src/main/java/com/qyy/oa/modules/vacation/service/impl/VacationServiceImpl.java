@@ -549,7 +549,7 @@ public class VacationServiceImpl implements VacationService {
         vStartTime.setStartTime(vacationEntity.getStartTime());
         //结束的时间
         vEndTime.setUserId(vacationEntity.getUserId());
-        vEndTime.setStartTime(vacationEntity.getStartTime());
+        vEndTime.setEndTime(vacationEntity.getEndTime());
         if (vacationMapper.selectUserVacationCount(vStartTime) > 0 && vacationMapper.selectUserVacationCount(vEndTime) > 0) {
             map.put("message", "该日期已经被请过");
             map.put("flag", "false");
