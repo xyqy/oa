@@ -12,7 +12,7 @@ public enum BooleanEnum {
     TRUE("true", "true"),
 
     /**
-     * 十天假期
+     * false
      */
     FALSE("false", "false");
 
