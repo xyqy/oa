@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qyy.oa.modules.admin.dao.AdminMapper">
-    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.admin.dto.AdminMoreDto">
+<mapper namespace="com.qyy.oa.modules.dao.AdminMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.dto.AdminMoreDTO">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="account" jdbcType="VARCHAR" property="account"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
@@ -52,7 +52,7 @@
     </select>
     <!--新增管理员账号-->
     <insert id="insertAdmin" keyColumn="id" keyProperty="id"
-            parameterType="com.qyy.oa.modules.admin.entity.AdminEntity" useGeneratedKeys="true">
+            parameterType="com.qyy.oa.modules.entity.AdminEntity" useGeneratedKeys="true">
         insert into admin
         <trim prefix="(" suffix=")" suffixOverrides=",">
 
@@ -91,7 +91,7 @@
         </trim>
     </insert>
     <!--修改管理员账号-->
-    <update id="updateAdmin" parameterType="com.qyy.oa.modules.admin.entity.AdminEntity">
+    <update id="updateAdmin" parameterType="com.qyy.oa.modules.entity.AdminEntity">
         update admin
         <set>
             <if test="password != null">
@@ -113,7 +113,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
     <!--删除管理员信息-->
-    <update id="deleteAdmin" parameterType="com.qyy.oa.modules.admin.entity.AdminEntity">
+    <update id="deleteAdmin" parameterType="com.qyy.oa.modules.entity.AdminEntity">
         update admin set is_delete = 1 where id = #{id,jdbcType=INTEGER}
     </update>
     <!--查询单个管理员详情-->
@@ -129,7 +129,7 @@
     </select>
 
     <!--查询管理员信息-->
-    <select id="selectAdminInfo" parameterType="com.qyy.oa.modules.admin.entity.AdminEntity" resultMap="BaseResultMap">
+    <select id="selectAdminInfo" parameterType="com.qyy.oa.modules.entity.AdminEntity" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM admin

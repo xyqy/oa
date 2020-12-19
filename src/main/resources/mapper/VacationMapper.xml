@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qyy.oa.modules.vacation.dao.VacationMapper">
-    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.vacation.dto.VacationMoreDto">
+<mapper namespace="com.qyy.oa.modules.dao.VacationMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.dto.VacationMoreDTO">
 
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="user_id" jdbcType="INTEGER" property="userId"/>
@@ -52,7 +52,7 @@
     </sql>
 
     <!--查询请假信息列表-->
-    <select id="selectVacationList" parameterType="com.qyy.oa.modules.vacation.dto.VacationMoreDto"
+    <select id="selectVacationList" parameterType="com.qyy.oa.modules.dto.VacationMoreDTO"
             resultMap="BaseResultMap">
         <include refid="Base_sql"/>
         <where>
@@ -80,7 +80,7 @@
     </select>
 
     <!--将所有的请假信息都完成才能再次填写-->
-    <select id="selectUserCount" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity" resultType="int">
+    <select id="selectUserCount" parameterType="com.qyy.oa.modules.entity.VacationEntity" resultType="int">
         SELECT COUNT(*)
         FROM vacation
         WHERE user_id = #{userId,jdbcType=INTEGER}
@@ -90,7 +90,7 @@
 
     <!--新增请假-->
     <insert id="insertVacation" keyColumn="id" keyProperty="id"
-            parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity" useGeneratedKeys="true">
+            parameterType="com.qyy.oa.modules.entity.VacationEntity" useGeneratedKeys="true">
         insert into vacation
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">
@@ -141,7 +141,7 @@
     </select>
 
     <!--更新请假信息-->
-    <update id="updateVacation" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity">
+    <update id="updateVacation" parameterType="com.qyy.oa.modules.entity.VacationEntity">
         update vacation
         <set>
             <if test="vacationTypeId != null">
@@ -180,8 +180,8 @@
     </select>
 
     <!--统计信息-->
-    <select id="countVacation" parameterType="com.qyy.oa.modules.vacation.dto.VacationCountDto"
-            resultType="com.qyy.oa.modules.vacation.dto.VacationCountDto">
+    <select id="countVacation" parameterType="com.qyy.oa.modules.dto.VacationCountDTO"
+            resultType="com.qyy.oa.modules.dto.VacationCountDTO">
         SELECT
         DATE_FORMAT(vacation.create_time, '%Y-%m') AS monthTime,
         count(DISTINCT user_id) AS userCount,
@@ -212,7 +212,7 @@
         ORDER BY DATE_FORMAT(vacation.create_time, '%Y-%m') DESC
     </select>
     <!--当前时间是否已经请过假-->
-    <select id="selectUserVacationCount" parameterType="com.qyy.oa.modules.vacation.entity.VacationEntity"
+    <select id="selectUserVacationCount" parameterType="com.qyy.oa.modules.entity.VacationEntity"
             resultType="int">
         SELECT
         count(*)
@@ -229,7 +229,7 @@
     </select>
 
     <!--统计请假类型信息-->
-    <select id="countVacationType" resultType="com.qyy.oa.modules.vacation.dto.VacationCountDto">
+    <select id="countVacationType" resultType="com.qyy.oa.modules.dto.VacationCountDTO">
         select count(vacation_type_id) AS vacationTypeCount,
                vt.name                 AS vacationTypeName
         from vacation

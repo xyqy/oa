@@ -5,9 +5,9 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.Page;
 import com.qyy.oa.enums.YearsEnum;
-import com.qyy.oa.modules.user.dao.UserMapper;
-import com.qyy.oa.modules.user.dto.UserMoreDto;
-import com.qyy.oa.modules.user.entity.UserEntity;
+import com.qyy.oa.modules.dao.UserMapper;
+import com.qyy.oa.modules.dto.UserMoreDTO;
+import com.qyy.oa.modules.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class DateJob {
     @Scheduled(cron = "0 0 1 * * ?")
     public void userJob() throws ParseException {
 
-        Page<UserEntity> userEntities = userMapper.selectUserList(new UserMoreDto());
+        Page<UserEntity> userEntities = userMapper.selectUserList(new UserMoreDTO());
         for (int i = 0; i < userEntities.getResult().size(); i++) {
             System.out.println(userEntities.getResult().get(i).getPassword());
 

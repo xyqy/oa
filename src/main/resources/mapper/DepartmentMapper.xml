@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qyy.oa.modules.department.dao.DepartmentMapper">
-    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.department.entity.DepartmentEntity">
+<mapper namespace="com.qyy.oa.modules.dao.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.entity.DepartmentEntity">
 
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
@@ -28,7 +28,7 @@
 
     <!--新增部门信息-->
     <insert id="insertDepartment" keyColumn="id" keyProperty="id"
-            parameterType="com.qyy.oa.modules.department.entity.DepartmentEntity" useGeneratedKeys="true">
+            parameterType="com.qyy.oa.modules.entity.DepartmentEntity" useGeneratedKeys="true">
         insert into department
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">
@@ -51,7 +51,7 @@
     </select>
 
     <!--更新部门信息-->
-    <update id="updateDepartment" parameterType="com.qyy.oa.modules.department.entity.DepartmentEntity">
+    <update id="updateDepartment" parameterType="com.qyy.oa.modules.entity.DepartmentEntity">
         update department
         <set>
             <if test="name != null">
@@ -75,7 +75,7 @@
     </select>
 
     <!--统计部门人数信息-->
-    <select id="countDepartment" resultType="com.qyy.oa.modules.department.dto.DepartmentMoreDto">
+    <select id="countDepartment" resultType="com.qyy.oa.modules.dto.DepartmentMoreDTO">
         select count(u.id) AS departmentCount, department.name AS departmentName
         from department
                  left join user u on department.id = u.department_id

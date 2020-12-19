@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.qyy.oa.modules.vacationtype.dao.VacationTypeMapper">
-    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.vacationtype.entity.VacationTypeEntity">
+<mapper namespace="com.qyy.oa.modules.dao.VacationTypeMapper">
+    <resultMap id="BaseResultMap" type="com.qyy.oa.modules.entity.VacationTypeEntity">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -29,7 +29,7 @@
     </select>
     <!--新增假期-->
     <insert id="insertVacationType" keyColumn="id" keyProperty="id"
-            parameterType="com.qyy.oa.modules.vacationtype.entity.VacationTypeEntity" useGeneratedKeys="true">
+            parameterType="com.qyy.oa.modules.entity.VacationTypeEntity" useGeneratedKeys="true">
         insert into vacation_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">
@@ -49,7 +49,7 @@
         </trim>
     </insert>
     <!--更新假期-->
-    <update id="updateVacationType" parameterType="com.qyy.oa.modules.vacationtype.entity.VacationTypeEntity">
+    <update id="updateVacationType" parameterType="com.qyy.oa.modules.entity.VacationTypeEntity">
         update vacation_type
         <set>
             <if test="name != null">
